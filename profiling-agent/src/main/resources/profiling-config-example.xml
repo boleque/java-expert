@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<profiling durationSeconds="10" outputFile="target/profiling-result.csv">
+    <method className="org.example.Main" methodName="main"/>
+</profiling>
