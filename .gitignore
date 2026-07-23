@@ -1,0 +1,44 @@
+# Build output
+target/
+build/
+out/
+*.class
+
+# Maven wrapper
+!.mvn/wrapper/maven-wrapper.jar
+
+# IDEs
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+
+# Eclipse
+.apt_generated/
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache/
+
+# NetBeans
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# Local environment and logs
+.env
+.env.*
+!.env.example
+*.log
+hs_err_pid*
+replay_pid*
+*.hprof
+
+# OS files
+.DS_Store
+Thumbs.db
