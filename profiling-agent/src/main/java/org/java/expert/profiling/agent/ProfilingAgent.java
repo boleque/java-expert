@@ -20,6 +20,7 @@ public final class ProfilingAgent {
     public static void premain(String agentArgs, Instrumentation instrumentation) {
         try {
             AgentConfig config = readConfig(agentArgs);
+            ProfilingRuntime.start(config.collectionDuration());
             start(config, instrumentation);
             registerResultWriter(config);
         } catch (RuntimeException e) {
@@ -45,7 +46,6 @@ public final class ProfilingAgent {
                     new ProfilingTransformer(method.className(), method.methodName(), ClassLoader.getSystemClassLoader())
             );
         }
-
     }
 
     private static void registerResultWriter(AgentConfig config) {

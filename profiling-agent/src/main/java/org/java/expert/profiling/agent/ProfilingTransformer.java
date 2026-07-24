@@ -58,7 +58,7 @@ public class ProfilingTransformer implements ClassFileTransformer {
             CtMethod ctMethod = ctClass.getDeclaredMethod(methodNameInstrumented);
 
             ctMethod.insertBefore(
-                    "org.java.expert.profiling.agent.MethodCallCounter.increment(\""
+                    "org.java.expert.profiling.agent.ProfilingRuntime.recordCall(\""
                             + classNameInstrumented + "#" + methodNameInstrumented
                             + "\");"
             );
