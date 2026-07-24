@@ -68,5 +68,4 @@ public final class ProfilingAgent {
             log.error("Failed to write profiling results to {}", outputFile);
         }
     }
-    }
 }
