@@ -14,22 +14,27 @@ public final class ProfilingAgent {
 
     private static final Logger log = LoggerFactory.getLogger(ProfilingAgent.class);
 
+    private ProfilingAgent() {
+    }
+
     public static void premain(String agentArgs, Instrumentation instrumentation) {
         try {
             AgentConfig config = readConfig(agentArgs);
             start(config, instrumentation);
+            registerResultWriter(config);
         } catch (RuntimeException e) {
-            log.error("Profiling agent failed to start: {}", e.getMessage());
-            e.printStackTrace(System.err);
+            log.error("Profiling agent failed to start", e);
         }
     }
 
-    private static AgentConfig readConfig(String agentArgs) {
-        if (agentArgs == null || agentArgs.isBlank()) {
-            throw new IllegalArgumentException("Path to profiling XML config must be passed as javaagent argument");
+    private static AgentConfig readConfig(String configPath) {
+        if (configPath == null || configPath.isBlank()) {
+            throw new IllegalArgumentException(
+                    "Path to profiling XML config must be passed as a javaagent argument"
+            );
         }
 
-        return AgentConfigParser.parse(Path.of(agentArgs.trim()));
+        return AgentConfigParser.parse(Path.of(configPath.trim()));
     }
 
     private static void start(AgentConfig config, Instrumentation instrumentation) {
@@ -40,9 +45,19 @@ public final class ProfilingAgent {
                     new ProfilingTransformer(method.className(), method.methodName(), ClassLoader.getSystemClassLoader())
             );
         }
+
     }
 
-    private static void writeResult(AgentConfig config) {
+    private static void registerResultWriter(AgentConfig config) {
+        Runtime.getRuntime().addShutdownHook(
+                new Thread(
+                        () -> writeToFile(config),
+                        "profiling-results-writer"
+                )
+        );
+    }
+
+    private static void writeToFile(AgentConfig config) {
         Path outputFile = config.outputFile();
 
         List<String> lines = new ArrayList<>();
@@ -65,7 +80,7 @@ public final class ProfilingAgent {
 
             log.info("Profiling results written to {}", outputFile.toAbsolutePath());
         } catch (IOException e) {
-            log.error("Failed to write profiling results to {}", outputFile);
+            log.error("Failed to write profiling results to {}", outputFile, e);
         }
     }
 }
